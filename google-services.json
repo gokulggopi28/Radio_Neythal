@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1070790025350",
+    "firebase_url": "https://theeradarsan-17fff.firebaseio.com",
+    "project_id": "theeradarsan-17fff",
+    "storage_bucket": "theeradarsan-17fff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070790025350:android:93f76a0003823a5f",
+        "android_client_info": {
+          "package_name": "com.techgentsia.theeradarsan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070790025350-p4cp8ehrep5etlv4jrenenmphm96bo6j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcJvQ5XNu31Jrxncjk1sEP7IXynBSpqGE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

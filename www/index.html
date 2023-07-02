@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <!--Import Google Icon Font-->
+    <link href="css/icon.css" rel="stylesheet" />
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
+    <link type="text/css" rel="stylesheet" href="css/style.css" media="screen,projection" />
+    <link href="css/imageviewer.css" rel="stylesheet" />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="js/firebase.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+
+          function onLoad() {
+              //  alert('onLoad');
+              document.addEventListener("deviceready", onDeviceReady, false);
+          }
+
+
+          function onDeviceReady() {
+              // Now safe to use device APIs
+              // alert('load');
+              window.youtube.init("AIzaSyCGsehHrZ0CEBR7RioK6unrgjagDIFVorM");
+              document.addEventListener("offline", onOffline, false);
+              document.addEventListener("backbutton", onBackKeyDown, false);
+
+              FCMPlugin.subscribeToTopic('neythal');
+
+              FCMPlugin.onNotification(
+                  function (data) {
+                      console.log(data, 'PUSH MESSAGE');
+                      if (data.wasTapped) {
+
+                          //  alert("tapped");
+                          //Notification was received on device tray and tapped by the user.
+                          if (data) {
+                              switch (data.notiType) {
+                                  case "live video":
+                                      $('#page1').click();
+                                      break;
+                                  case "video":
+                                      $('#page4').click();
+                                      break;
+                                  case "photo":
+                                      $('#page2').click();
+                                      break;
+                                  case "message":
+                                      $('#page3').click();
+                                      break;
+                                  default:
+                                      break;
+
+                              }
+                          }
+                      } else {
+                          //Notification was received in foreground. Maybe the user needs to be notified.
+
+                          if (data) {
+
+                              // alert(data.notiType);
+
+                              switch (data.notiType) {
+                                  case "live video":
+                                      // alert("LIVE");
+                                      navigator.notification.beep(1);
+                                      $('#liveNoti').show();
+                                      break;
+                                  case "video":
+                                      // alert("VDO");
+                                      navigator.notification.beep(1);
+                                      $('#videoNoti').show();
+                                      break;
+                                  case "photo":
+                                      //  alert("PHOTO");
+                                      navigator.notification.beep(1);
+                                      $('#photoNoti').show();
+                                      break;
+                                  case "message":
+                                      // alert("MSG");
+                                      navigator.notification.beep(1);
+                                      $('#messageNoti').show();
+                                      break;
+                                  default:
+                                      break;
+
+                              }
+                          }
+                      }
+                  },
+                  function (msg) {
+                      console.log('onNotification callback successfully registered: ' + msg);
+                  },
+                  function (err) {
+                      console.log('Error registering onNotification callback: ' + err);
+                  }
+              );
+
+
+          }
+
+          function onBackKeyDown(e) {
+              e.preventDefault();
+              if (fullscreen) {
+                  viewer.hide();
+                  fullscreen = !fullscreen;
+              }
+              else {
+                  navigator.notification.confirm("Are you sure you want to exit ?", onConfirm, "Confirmation", "Yes,No");
+              }
+          }
+
+          function onConfirm(button) {
+              if (button == 2) {//If User selected No, then we just do nothing
+                  return;
+              } else {
+                  navigator.app.exitApp();// Otherwise we quit the app.
+              }
+          }
+
+          function onOffline() {
+              if (!networkerrorshown) {
+                  navigator.notification.alert(
+                      'Make sure Wi-Fi or cellular data is turned on',  // message
+                      alertDismissed,         // callback
+                      'No internet connection',            // title
+                      'Done'                  // buttonName
+                  );
+                  networkerrorshown = true;
+              }
+          }
+
+
+
+      </script>
+
+    <style>
+          .faIconSize > iframe > .fa-play-circle-o {
+              font-size:55px !important;
+          }
+
+          #control {
+              line-height : 45px !important;
+          }
+      </style>
+
+</head>
+<body onload="onLoad()">
+<div class="no_net_box" id="noNetDiv" style="display: none">
+    <svg class="img" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 477 477" style="enable-background:new 0 0 477 477;" xml:space="preserve">
+            <g>
+            <path d="M189.99,192.757c3.646,1.968,8.195,0.605,10.162-3.04c1.967-3.646,0.606-8.195-3.04-10.162
+              C168.669,164.211,151,134.685,151,102.5c0-48.248,39.252-87.5,87.5-87.5S326,54.252,326,102.5
+              c0,32.186-17.669,61.711-46.112,77.056c-3.646,1.966-5.006,6.516-3.04,10.162c1.355,2.513,3.939,3.94,6.607,3.94
+              c1.202,0,2.422-0.29,3.554-0.901C320.312,174.792,341,140.207,341,102.5C341,45.981,295.019,0,238.5,0S136,45.981,136,102.5
+              C136,140.207,156.688,174.791,189.99,192.757z" />
+
+
+
+
+
+
+
+                <path d="M265.854,141.301c-3.382,2.392-4.184,7.073-1.792,10.454c1.461,2.066,3.777,3.169,6.129,3.169
+              c1.498,0,3.009-0.447,4.325-1.377C291.099,141.816,301,122.733,301,102.5c0-34.462-28.038-62.5-62.5-62.5S176,68.038,176,102.5
+              c0,20.233,9.901,39.316,26.484,51.047c3.38,2.393,8.062,1.59,10.454-1.792c2.392-3.381,1.59-8.062-1.792-10.454
+              C198.531,132.378,191,117.873,191,102.5c0-26.191,21.309-47.5,47.5-47.5S286,76.309,286,102.5
+              C286,117.873,278.469,132.378,265.854,141.301z" />
+
+
+
+
+
+
+
+                <path d="M326.061,380.031c-0.007-0.021-0.015-0.042-0.022-0.064L246,146.25v-22.54c8.729-3.096,15-11.432,15-21.21
+              c0-12.407-10.093-22.5-22.5-22.5S216,90.093,216,102.5c0,9.778,6.271,18.114,15,21.21v22.542l-28.914,84.428
+              c-0.022,0.065-0.046,0.129-0.066,0.194l-24.912,72.742c-0.033,0.095-0.069,0.189-0.097,0.284l-39.166,114.364
+              c-1.342,3.919,0.747,8.184,4.665,9.526c0.805,0.275,1.625,0.406,2.431,0.406c3.117,0,6.029-1.958,7.095-5.072l10.164-29.678
+              l68.8,39.875V469.5c0,4.142,3.358,7.5,7.5,7.5s7.5-3.358,7.5-7.5v-36.178l68.8-39.876l10.156,29.657
+              c1.343,3.918,5.606,6.009,9.526,4.665c3.918-1.342,6.007-5.606,4.665-9.525L326.061,380.031z M212.72,245.925L231,261.468v67.753
+              l-37.867-26.102L212.72,245.925z M246,261.468l18.28-15.542l19.587,57.194L246,329.221V261.468z M259.057,230.676L246,241.778
+              v-49.23L259.057,230.676z M238.5,95c4.136,0,7.5,3.364,7.5,7.5s-3.364,7.5-7.5,7.5s-7.5-3.364-7.5-7.5S234.364,95,238.5,95z
+               M231,241.778l-13.057-11.102L231,192.548V241.778z M167.154,378.98l20.932-61.122L231,347.439v68.545L167.154,378.98z
+               M246,415.985v-68.545l42.914-29.581l20.932,61.121L246,415.985z" />
+
+
+
+
+
+
+
+          </g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
+        </svg>
+    <h5>
+        No Internet Connection
+    </h5>
+    <button id="refreshButton" class="btn waves-effect orange lighten-1 waves-light" type="button" name="action">
+        Retry
+        <i class="material-icons left">refresh</i>
+    </button>
+</div>
+<div class="row" id="masterDiv">
+    <div class="col s12 center brand" style="padding:10px !important;">
+        <div class="logo" style="display:inline-block;width:65px; height:65px;">
+            <img src="img/logo.png"  />
+        </div>
+        <div class="name" style="display:inline-block; text-align:center;width: 60%;">
+            <span style="font-weight: bold;">Radio Neythal[107.8]</span>
+            <!--<span >Alappuzha</span>-->
+        </div>
+        <div class="faIconSize" style="display: inline-block; width: 65px; height: 65px; float: right;">
+            <iframe src="http://myradiostream.com/embed/button.php?s=radioneythal&amp;btnstyle=circle-o" name="kPkWCWH3eYZW" frameborder="0" scrolling="no" style="width:65px;height:75px;border:0;margin:0;overflow:hidden;border-radius:2px;"></iframe>
+        </div>
+    </div>
+    <div class="col s12 no-padding">
+        <ul class="tabs home-tab">
+            <li class="tab col s3" id="page1">
+                <a class="active" href="#live">Live <span class="noti_badge" id="liveNoti" style="display: none;" >!</span></a>
+            </li>
+            <li class="tab col s3"  id="page2">
+                <a href="#photos">Photos  <span class="noti_badge" id="photoNoti" style="display: none;">!</span></a>
+            </li>
+            <li class="tab col s3"  id="page3">
+                <a href="#messages">Messages  <span class="noti_badge" id="messageNoti" style="display: none;">!</span></a>
+            </li>
+            <li class="tab col s3"  id="page4">
+                <a href="#archived">Archived  <span class="noti_badge" id="videoNoti" style="display: none;">!</span></a>
+            </li>
+        </ul>
+
+    </div>
+
+
+
+    <div id="live" class="col s12 no-padding tab-content scrollsmooth">
+
+        <div class="loading" id="loaderImg">
+            <img src="img/loading.gif" width="74px" />
+        </div>
+        <!--              <img src="img/wave.gif" class="loader" id="loaderImg"/> -->
+
+
+        <div style="display:none;" id="liveContainer">
+
+
+
+            <div class="clearfix"></div>
+
+            <div class="col s12 padding-top-15" data-bind="with: livevideo">
+                <div class="card">
+                    <div class="card-content">
+                        <p class="video-title" id="latestDiv" data-bind="text:caption"></p>
+                        <div class="box sixteen-nine" data-bind="click: $parent.playlivevideo">
+                            <div class="content">
+                                <div class="live" id="Div1" style="display:none;">LIVE</div>
+                                <img src="img/play-btn.png" width="50" class="play" />
+                                <img data-bind="attr:{src: thumbnail}" height="100%" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--   <p class="author" data-bind="text:caption"></p>    -->
+            </div>
+
+
+
+            <div class="clearfix"></div>
+            <div class="col s12">
+
+
+                <div class="card" data-bind="with:homescreeninfo">
+                    <div class="card-content">
+                        <h5 data-bind="text:title"></h5>
+                        <p data-bind="text:description"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="photos" class="col s12 no-padding  tab-content scrollsmooth" style="display:none;">
+        <div class="col s12 padding-top-15 ">
+            <div data-bind="foreach: photos">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="box sixteen-nine">
+                            <div class="content">
+                                <img data-bind="attr:{src: url}" class="img-view" />
+                            </div>
+                        </div>
+                        <p class="video-title" data-bind="text:caption" style="margin-top:15px;">Title</p>
+                    </div>
+                    <div class="card-action right-align">
+                        <span class="author" data-bind="text:date"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div id="messages" class="col s12 no-padding tab-content scrollsmooth" style="display:none;">
+        <div class="col s12 padding-top-15 ">
+            <div data-bind="foreach: messages">
+                <div class="card">
+                    <div class="card-content">
+                        <p data-bind="html:message"></p>
+                    </div>
+                    <div class="card-action right-align">
+                        <span class="author" data-bind="text:author"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+    <div id="archived" class="col s12 no-padding tab-content scrollsmooth" style="display:none;">
+        <div class="col s12 padding-top-15 ">
+            <div data-bind="foreach:videos">
+                <div class="card">
+                    <div class="card-content">
+                        <p class="video-title" data-bind="text:caption">Title</p>
+                        <div class="box sixteen-nine">
+                            <div class="content" data-bind="click: $parent.playarchivedvideo">
+                                <img src="img/play-btn.png" width="50" class="play" />
+                                <img data-bind="attr:{src: thumbnail}" height="100%" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-action right-align">
+                        <span class="author" data-bind="text:date"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ---------------- Image Fullscreen ---------------- -->
+<!--		<div class="image-container" style="display:none;">
+        <div class="header">
+            <div class="back img-view"><img src="img/back.png"/></div>
+            <div class="img-title">Image Title</div>
+        </div>
+        <div class="img-full">
+            <img src="img/img-1.jpg" width="100%"/>
+        </div>
+    </div>-->
+<!--Import jQuery before materialize.js-->
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script src="js/jquery.touchSwipe.min.js"></script>
+<script type="text/javascript" src="js/materialize.min.js"></script>
+<script src="js/knockout-3.2.0.js"></script>
+<script src="js/imageviewer.min.js"></script>
+<!--        <script src="js/compressed.js"></script>-->
+<script src="js/script.new.js?v=1"></script>
+
+
+<script>
+                        //$(document).ready(function(){
+                        //	$(".img-view").click(function(){
+                        //		$(".image-container").fadeToggle( "300", "linear" );
+                        //	});
+
+                        //	$(".img-full").click(function(){
+                        //		$(".header").toggleClass( "full-scr" );
+                        //		$(".image-container").toggleClass( "dark" );
+                        //	});
+                        //	// the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+                        //	$('.modal').modal();
+                        //});
+        </script>
+</body>
+</html>
